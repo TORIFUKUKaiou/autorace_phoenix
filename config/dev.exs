@@ -61,7 +61,8 @@ config :autorace_phoenix, AutoracePhoenixWeb.Endpoint,
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/autorace_phoenix_web/(live|views)/.*(ex)$",
-      ~r"lib/autorace_phoenix_web/templates/.*(eex)$"
+      ~r"lib/autorace_phoenix_web/templates/.*(eex)$",
+      ~r"lib/autorace_phoenix_web/live/.*(sface)$"
     ]
   ]
 

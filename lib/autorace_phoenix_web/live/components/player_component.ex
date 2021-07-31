@@ -1,11 +1,13 @@
 defmodule AutoracePhoenixWeb.PlayerComponent do
-  use AutoracePhoenixWeb, :live_component
+  use Surface.Component
+
+  prop url, :string, required: true
 
   def render(assigns) do
-    ~L"""
+    ~F"""
     <div id="dplayer"
          phx-hook="Player"
-         data-url="<%= @url %>">
+         data-url={@url} >
     </div>
     """
   end

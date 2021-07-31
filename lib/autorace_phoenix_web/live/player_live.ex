@@ -1,36 +1,87 @@
 defmodule AutoracePhoenixWeb.PlayerLive do
-  use AutoracePhoenixWeb, :live_view
+  use Surface.LiveView
 
-  @urls [
-    "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8",
-    "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
-    "http://sp-auto.digi-c.com/autorace/_definst_/kawaguchi/2020/kawaguchi_20201103_11/playlist.m3u8",
-    "http://sp-auto.digi-c.com/autorace/_definst_/kawaguchi/2020/kawaguchi_20201103_12/playlist.m3u8"
-  ]
+  alias AutoracePhoenix.Autorace
+  alias Surface.Components.Form
+  alias Surface.Components.Form.{DateInput, Field, Label, Select}
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, url: nil, index: -1)}
+    {:ok,
+     assign(socket,
+       url: nil,
+       index: -1,
+       date: Date.utc_today() |> Date.to_string(),
+       place: "kawaguchi",
+       race: 8,
+       places: Autorace.places(),
+       races: Autorace.races(),
+       urls: nil
+     )}
   end
 
   def render(assigns) do
-    ~L"""
-    <button phx-click="play">
-      Play
-    </button>
+    ~F"""
+    {#if @url == nil}
+    <div class="columns">
+      <div class="column is-offset-one-quarter">
+        <Form for={:race} change="change" opts={autocomplete: "off"}>
+          <Field name="date">
+            <Label/>
+            <div class="control">
+              <DateInput value={@date} />
+            </div>
+          </Field>
+          <Field name="place">
+            <Label/>
+            <div class="select">
+              <Select form="race" field="place" selected={@place} options={@places}/>
+            </div>
+          </Field>
+          <Field name="race">
+            <Label/>
+            <div class="select">
+              <Select form="race" field="race" selected={@race} options={@races}/>
+            </div>
+          </Field>
+        </Form>
+      </div>
+      <div class="column">
+        <button class="button is-link" phx-click="play">Play</button>
+      </div>
+    </div>
+    {/if}
 
-    <%= if @url do %>
-    <%= live_component @socket, AutoracePhoenixWeb.PlayerComponent, url: @url %>
-    <% end %>
+    {#if @url}
+    <AutoracePhoenixWeb.PlayerComponent url={@url} />
+    {/if}
     """
+  end
+
+  def handle_event("change", params, socket) do
+    %{"race" => %{"date" => date, "place" => place, "race" => race}} = params
+
+    {:noreply,
+     assign(socket,
+       date: date,
+       place: place,
+       race: String.to_integer(race)
+     )}
   end
 
   def handle_event("play", _, socket) do
     index = socket.assigns.index + 1
-    {:noreply, assign(socket, url: Enum.at(@urls, index), index: index)}
+    urls = urls(socket.assigns)
+    {:noreply, assign(socket, urls: urls, url: Enum.at(urls, index), index: index)}
   end
 
   def handle_event("load-more", _, socket) do
     index = socket.assigns.index + 1
-    {:noreply, assign(socket, url: Enum.at(@urls, index), index: index)}
+    {:noreply, assign(socket, url: Enum.at(socket.assigns.urls, index), index: index)}
+  end
+
+  defp urls(%{date: date, place: place, race: race}) do
+    for i <- race..12 do
+      Autorace.url(Date.from_iso8601!(date), place, i)
+    end
   end
 end
