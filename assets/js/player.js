@@ -31,7 +31,7 @@ class Player {
 
   fullScreen() {
     console.log("fullScreen");
-    this.dp.fullScreen.request("web");
+    this.dp.fullScreen.request("browser");
   }
 
   play() {
