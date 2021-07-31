@@ -82,8 +82,9 @@ defmodule AutoracePhoenixWeb.PlayerLive do
   end
 
   def handle_event("load-more", _, socket) do
-    index = socket.assigns.index + 1
-    {:noreply, assign(socket, url: Enum.at(socket.assigns.urls, index), index: index)}
+    url = Enum.at(socket.assigns.urls, socket.assigns.index + 1)
+    index = if url, do: socket.assigns.index + 1, else: -1
+    {:noreply, assign(socket, url: url, index: index)}
   end
 
   defp urls(%{date: date, place: place, race: race}) do
