@@ -52,6 +52,9 @@ defmodule AutoracePhoenixWeb.PlayerLive do
     {/if}
 
     {#if @url}
+    <div class="column">
+      <button class="button is-link" phx-click="back">back</button>
+    </div>
     <AutoracePhoenixWeb.PlayerComponent url={@url} />
     {/if}
     """
@@ -72,6 +75,10 @@ defmodule AutoracePhoenixWeb.PlayerLive do
     index = socket.assigns.index + 1
     urls = urls(socket.assigns)
     {:noreply, assign(socket, urls: urls, url: Enum.at(urls, index), index: index)}
+  end
+
+  def handle_event("back", _, socket) do
+    {:noreply, assign(socket, url: nil, index: -1)}
   end
 
   def handle_event("load-more", _, socket) do
