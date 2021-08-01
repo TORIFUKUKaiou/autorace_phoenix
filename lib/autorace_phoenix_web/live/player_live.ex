@@ -7,23 +7,15 @@ defmodule AutoracePhoenixWeb.PlayerLive do
 
   def mount(_params, _session, socket) do
     date = init_date() |> Date.to_string()
-    places = places(date)
-    place = Keyword.values(places) |> Enum.at(0)
-    {title, range} = title_range(date, place)
 
     {:ok,
      assign(socket,
        url: nil,
        index: -1,
-       date: date,
-       place: place,
-       title: title,
-       range: range,
-       race: 8,
-       places: places,
        races: Autorace.races(),
        urls: nil
-     )}
+     )
+     |> update_race_info(date, nil, "8")}
   end
 
   def render(assigns) do
@@ -71,24 +63,7 @@ defmodule AutoracePhoenixWeb.PlayerLive do
 
   def handle_event("change", params, socket) do
     %{"race" => %{"date" => date, "place" => place, "race" => race}} = params
-    places = places(date)
-
-    place =
-      if Keyword.values(places) |> Enum.any?(&(&1 == place)),
-        do: place,
-        else: Keyword.values(places) |> Enum.at(0)
-
-    {title, range} = title_range(date, place)
-
-    {:noreply,
-     assign(socket,
-       places: places,
-       date: date,
-       place: place,
-       title: title,
-       range: range,
-       race: String.to_integer(race)
-     )}
+    {:noreply, update_race_info(socket, date, place, race)}
   end
 
   def handle_event("play", _, socket) do
@@ -163,5 +138,25 @@ defmodule AutoracePhoenixWeb.PlayerLive do
 
   defp convert_place_value(place) do
     Map.get(%{"isesaki" => "isezaki", "hamamatsu" => "hama"}, place, place)
+  end
+
+  defp update_race_info(socket, date, place, race) do
+    places = places(date)
+
+    place =
+      if Keyword.values(places) |> Enum.any?(&(&1 == place)),
+        do: place,
+        else: Keyword.values(places) |> Enum.at(0)
+
+    {title, range} = title_range(date, place)
+
+    assign(socket,
+      places: places,
+      date: date,
+      place: place,
+      title: title,
+      range: range,
+      race: String.to_integer(race)
+    )
   end
 end
