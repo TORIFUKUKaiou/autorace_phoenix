@@ -14,7 +14,8 @@ config :autorace_phoenix, AutoracePhoenixWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   force_ssl: [rewrite_on: [:x_forwarded_proto], host: nil],
   check_origin: [
-    "//accurate-conscious-oropendula.gigalixirapp.com"
+    "//accurate-conscious-oropendula.gigalixirapp.com",
+    "//autoracex.torifuku-kaiou.app"
   ]
 
 # Do not print debug messages in production
