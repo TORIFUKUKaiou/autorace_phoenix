@@ -63,7 +63,7 @@ jobs:
       - checkout
       - run: sudo apt-get update
       - run: sudo apt-get install -y python3 python3-pip git-core curl
-      - run: sudo apt-get install -y rust
+      - run: sudo apt-get install -y rustc
       - run: pip3 install gigalixir --user
       - run:
           name: Make sure the executable is in your path, if it isn’t already.
