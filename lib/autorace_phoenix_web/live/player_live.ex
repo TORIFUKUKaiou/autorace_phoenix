@@ -22,7 +22,7 @@ defmodule AutoracePhoenixWeb.PlayerLive do
     ~F"""
     {#if @url == nil}
     <div class="columns">
-      <div class="column is-offset-one-quarter">
+      <div class="column">
         <Form for={:race} change="change" opts={autocomplete: "off"}>
           <Field name="date">
             <Label/>
@@ -50,6 +50,7 @@ defmodule AutoracePhoenixWeb.PlayerLive do
         <button class="button is-link" phx-click="play">Play</button>
       </div>
     </div>
+    <p>再生可能レースを表示予定</p>
     {/if}
 
     {#if @url}
