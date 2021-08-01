@@ -15,8 +15,7 @@ config :autorace_phoenix, AutoracePhoenixWeb.Endpoint,
   force_ssl: [rewrite_on: [:x_forwarded_proto], host: nil],
   check_origin: [
     "//accurate-conscious-oropendula.gigalixirapp.com",
-    "//autoracex.torifuku-kaiou.app",
-    "//sp-auto.digi-c.com"
+    "//autoracex.torifuku-kaiou.app"
   ]
 
 # Do not print debug messages in production

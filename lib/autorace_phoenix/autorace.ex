@@ -15,7 +15,7 @@ defmodule AutoracePhoenix.Autorace do
 
   def url(date, place, race) do
     # "http://sp-auto.digi-c.com/autorace/_definst_/kawaguchi/2020/kawaguchi_20201103_12/playlist.m3u8"
-    "http://sp-auto.digi-c.com/autorace/_definst_/#{place}/#{date.year}/#{place}_#{
+    "https://sp-auto.digi-c.com/autorace/_definst_/#{place}/#{date.year}/#{place}_#{
       Date.to_string(date) |> String.replace("-", "")
     }_#{Integer.to_string(race) |> String.pad_leading(2, "0")}/playlist.m3u8"
   end
