@@ -14,7 +14,8 @@ defmodule AutoracePhoenix.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: AutoracePhoenix.PubSub},
       # Start the Endpoint (http/https)
-      AutoracePhoenixWeb.Endpoint
+      AutoracePhoenixWeb.Endpoint,
+      {AutoracePhoenix.Autorace.Cache, name: AutoracePhoenix.Autorace.Cache}
       # Start a worker by calling: AutoracePhoenix.Worker.start_link(arg)
       # {AutoracePhoenix.Worker, arg}
     ]
