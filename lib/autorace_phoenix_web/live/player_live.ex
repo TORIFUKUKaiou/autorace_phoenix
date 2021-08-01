@@ -6,11 +6,13 @@ defmodule AutoracePhoenixWeb.PlayerLive do
   alias Surface.Components.Form.{DateInput, Field, Label, Select}
 
   def mount(_params, _session, socket) do
+    date = init_date()
+
     {:ok,
      assign(socket,
        url: nil,
        index: -1,
-       date: Date.utc_today() |> Date.to_string(),
+       date: Date.to_string(date),
        place: "kawaguchi",
        race: 8,
        places: Autorace.places(),
@@ -91,5 +93,13 @@ defmodule AutoracePhoenixWeb.PlayerLive do
     for i <- race..12 do
       Autorace.url(Date.from_iso8601!(date), place, i)
     end
+  end
+
+  defp init_date do
+    dt = DateTime.now!("Japan", Zoneinfo.TimeZoneDatabase)
+
+    if dt.hour < 17,
+      do: DateTime.add(dt, -1 * 60 * 60 * 24, :second, Zoneinfo.TimeZoneDatabase),
+      else: DateTime.to_date(dt)
   end
 end

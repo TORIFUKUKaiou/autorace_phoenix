@@ -47,7 +47,8 @@ defmodule AutoracePhoenix.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:surface, "~> 0.5.2"}
+      {:surface, "~> 0.5.2"},
+      {:zoneinfo, "~> 0.1.4"}
     ]
   end
 
