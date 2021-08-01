@@ -102,7 +102,9 @@ defmodule AutoracePhoenixWeb.PlayerLive do
       |> Enum.map(fn %{"place" => place} -> place end)
       |> Enum.map(&convert_place_value/1)
 
-    Enum.filter(Autorace.places(), fn {_name, value} -> value in places end)
+    result_places = Enum.filter(Autorace.places(), fn {_name, value} -> value in places end)
+
+    if Enum.empty?(result_places), do: AutoracePhoenix.Autorace.places(), else: result_places
   end
 
   defp title_range(date, place) do
