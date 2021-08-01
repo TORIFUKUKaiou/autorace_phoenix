@@ -1,6 +1,6 @@
 defmodule AutoracePhoenix.Autorace.GetEvents do
   def run do
-    HTTPoison.get("https://admob-app-id-5452967350.firebaseio.com/events.jso")
+    HTTPoison.get("https://admob-app-id-5452967350.firebaseio.com/events.json")
     |> handle_response()
     |> Map.get(:body)
     |> Jason.decode!()
