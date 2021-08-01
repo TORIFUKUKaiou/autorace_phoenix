@@ -59,4 +59,4 @@ config :logger, level: :info
 # and configuration from environment variables.
 # import_config "prod.secret.exs"
 
-config :my_app, AutoracePhoenixWeb.Endpoint, server: true
+config :autorace_phoenix, AutoracePhoenixWeb.Endpoint, server: true
