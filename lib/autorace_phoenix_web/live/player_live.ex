@@ -6,16 +6,21 @@ defmodule AutoracePhoenixWeb.PlayerLive do
   alias Surface.Components.Form.{DateInput, Field, Label, Select}
 
   def mount(_params, _session, socket) do
-    date = init_date()
+    date = init_date() |> Date.to_string()
+    places = places(date)
+    place = Keyword.values(places) |> Enum.at(0)
+    {title, range} = title_range(date, place)
 
     {:ok,
      assign(socket,
        url: nil,
        index: -1,
-       date: Date.to_string(date),
-       place: "kawaguchi",
+       date: date,
+       place: place,
+       title: title,
+       range: range,
        race: 8,
-       places: Autorace.places(),
+       places: places,
        races: Autorace.races(),
        urls: nil
      )}
@@ -48,6 +53,8 @@ defmodule AutoracePhoenixWeb.PlayerLive do
         </Form>
       </div>
       <div class="column">
+        <Label>{@title}</Label>
+        <p>{@range}</p>
         <button class="button is-link" phx-click="play">Play</button>
       </div>
     </div>
@@ -64,11 +71,22 @@ defmodule AutoracePhoenixWeb.PlayerLive do
 
   def handle_event("change", params, socket) do
     %{"race" => %{"date" => date, "place" => place, "race" => race}} = params
+    places = places(date)
+
+    place =
+      if Keyword.values(places) |> Enum.any?(&(&1 == place)),
+        do: place,
+        else: Keyword.values(places) |> Enum.at(0)
+
+    {title, range} = title_range(date, place)
 
     {:noreply,
      assign(socket,
+       places: places,
        date: date,
        place: place,
+       title: title,
+       range: range,
        race: String.to_integer(race)
      )}
   end
@@ -101,5 +119,49 @@ defmodule AutoracePhoenixWeb.PlayerLive do
     if dt.hour < 17,
       do: DateTime.add(dt, -1 * 60 * 60 * 24, :second, Zoneinfo.TimeZoneDatabase),
       else: DateTime.to_date(dt)
+  end
+
+  defp places(date) do
+    places =
+      filtered_events(date)
+      |> Enum.map(fn %{"place" => place} -> place end)
+      |> Enum.map(&convert_place_value/1)
+
+    Enum.filter(Autorace.places(), fn {_name, value} -> value in places end)
+  end
+
+  defp title_range(date, place) do
+    map =
+      filtered_events(date)
+      |> Enum.find(fn event ->
+        converted_place = Map.get(event, "place") |> convert_place_value()
+        converted_place == place
+      end)
+
+    if map do
+      {Map.get(map, "title"), Map.get(map, "range")}
+    else
+      {"開催無し", ""}
+    end
+  end
+
+  defp filtered_events(date) do
+    dt =
+      DateTime.new!(
+        Date.from_iso8601!(date),
+        Time.new!(0, 0, 0, 0),
+        "Japan",
+        Zoneinfo.TimeZoneDatabase
+      )
+
+    AutoracePhoenix.Autorace.Cache.events()
+    |> Enum.filter(fn %{"start" => start, "end" => ending} ->
+      (DateTime.compare(dt, start) == :eq or DateTime.compare(dt, start) == :gt) and
+        (DateTime.compare(dt, ending) == :eq or DateTime.compare(dt, ending) == :lt)
+    end)
+  end
+
+  defp convert_place_value(place) do
+    Map.get(%{"isesaki" => "isezaki", "hamamatsu" => "hama"}, place, place)
   end
 end
