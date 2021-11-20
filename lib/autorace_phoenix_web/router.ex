@@ -17,7 +17,8 @@ defmodule AutoracePhoenixWeb.Router do
   scope "/", AutoracePhoenixWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", PlayerLive
+    get "/page", PageController, :index
   end
 
   # Other scopes may use custom stacks.
