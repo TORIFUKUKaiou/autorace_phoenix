@@ -18,7 +18,7 @@ defmodule AutoracePhoenixWeb.Router do
     pipe_through :browser
 
     live "/", PlayerLive
-    live "/page", PageLive, :index
+    get "/page", PageController, :index
   end
 
   # Other scopes may use custom stacks.
@@ -39,6 +39,18 @@ defmodule AutoracePhoenixWeb.Router do
     scope "/" do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: AutoracePhoenixWeb.Telemetry
+    end
+  end
+
+  # Enables the Swoosh mailbox preview in development.
+  #
+  # Note that preview only shows emails that were sent by the same
+  # node running the Phoenix server.
+  if Mix.env() == :dev do
+    scope "/dev" do
+      pipe_through :browser
+
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
 end

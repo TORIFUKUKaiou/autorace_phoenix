@@ -7,12 +7,8 @@ defmodule AutoracePhoenixWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_autorace_phoenix_key",
-    signing_salt: "XMGhC12i"
+    signing_salt: "XupatTsA"
   ]
-
-  socket "/socket", AutoracePhoenixWeb.UserSocket,
-    websocket: true,
-    longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
@@ -24,7 +20,7 @@ defmodule AutoracePhoenixWeb.Endpoint do
     at: "/",
     from: :autorace_phoenix,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(assets fonts images favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -32,7 +28,6 @@ defmodule AutoracePhoenixWeb.Endpoint do
     socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
-    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :autorace_phoenix
   end
 
   plug Phoenix.LiveDashboard.RequestLogger,

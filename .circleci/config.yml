@@ -3,14 +3,9 @@ jobs:
   build:
     parallelism: 1
     docker:
-      - image: circleci/elixir:1.11.4
+      - image: circleci/elixir:1.12.3
         environment:
           MIX_ENV: test
-      - image: circleci/postgres:13.2
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_DB: autorace_phoenix_test
-          POSTGRES_PASSWORD: postgres
 
     working_directory: ~/app
 
@@ -46,10 +41,6 @@ jobs:
           key: v1-build-cache
           paths: "_build"
 
-      - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
-
       - run: mix test
 
       - store_test_results:
@@ -57,7 +48,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/elixir:1.11.4
+      - image: circleci/elixir:1.12.3
     steps:
       - add_ssh_keys
       - checkout
@@ -82,7 +73,6 @@ jobs:
       - run: git push -f gigalixir HEAD:refs/heads/main
 
       - run: printf "Host *\n StrictHostKeyChecking no" > ~/.ssh/config
-      - run: gigalixir ps:migrate
 
 workflows:
   version: 2

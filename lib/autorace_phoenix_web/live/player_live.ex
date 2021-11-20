@@ -1,9 +1,7 @@
 defmodule AutoracePhoenixWeb.PlayerLive do
-  use Surface.LiveView
+  use AutoracePhoenixWeb, :live_view
 
   alias AutoracePhoenix.Autorace
-  alias Surface.Components.Form
-  alias Surface.Components.Form.{DateInput, Field, Label, Select}
 
   def mount(_params, _session, socket) do
     date = init_date() |> Date.to_string()
@@ -19,46 +17,29 @@ defmodule AutoracePhoenixWeb.PlayerLive do
   end
 
   def render(assigns) do
-    ~F"""
-    {#if @url == nil}
-    <div class="columns">
-      <div class="column">
-        <Form for={:race} change="change" opts={autocomplete: "off"}>
-          <Field name="date">
-            <Label/>
-            <div class="control">
-              <DateInput value={@date} />
-            </div>
-          </Field>
-          <Field name="place">
-            <Label/>
-            <div class="select">
-              <Select form="race" field="place" selected={@place} options={@places}/>
-            </div>
-          </Field>
-          <Field name="race">
-            <Label/>
-            <div class="select">
-              <Select form="race" field="race" selected={@race} options={@races}/>
-            </div>
-          </Field>
-        </Form>
-      </div>
-      <div class="column">
-        <Label>{@title}</Label>
-        <p>{@range}</p>
-        <button class="button is-link" phx-click="play">Play</button>
-      </div>
-    </div>
-    <p>再生可能レースを表示予定</p>
-    {/if}
+    ~H"""
+    <%= if @url == nil do %>
+      <h1><%= @title %></h1>
+      <h2><%= @range %></h2>
 
-    {#if @url}
-    <div class="column">
+      <.form let={f} for={:race} phx-change="change" phx-submit="play">
+        <label>
+          Date: <%= date_input f, :date, value: @date %>
+        </label>
+        <label>
+          Place: <%= select f, :place, @places, selected: @place %>
+        </label>
+        <label>
+          Race: <%= select f, :race, @races, selected: @race %>
+        </label>
+
+        <%= submit "Play" %>
+      </.form>
+    <% else %>
       <button class="button is-link" phx-click="back">back</button>
-    </div>
-    <AutoracePhoenixWeb.PlayerComponent url={@url} />
-    {/if}
+      <%= live_component @socket, AutoracePhoenixWeb.PlayerComponent,
+                         url: @url %>
+    <% end %>
     """
   end
 

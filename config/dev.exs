@@ -1,33 +1,22 @@
-use Mix.Config
-
-# Configure your database
-config :autorace_phoenix, AutoracePhoenix.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "autorace_phoenix_dev",
-  hostname: "localhost",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+import Config
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
-# with webpack to recompile .js and .css sources.
+# with esbuild to bundle .js and .css sources.
 config :autorace_phoenix, AutoracePhoenixWeb.Endpoint,
-  http: [port: 4000],
-  debug_errors: true,
-  code_reloader: true,
+  # Binding to loopback ipv4 address prevents access from other machines.
+  # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
+  http: [ip: {127, 0, 0, 1}, port: 4000],
   check_origin: false,
+  code_reloader: true,
+  debug_errors: true,
+  secret_key_base: "CD0D1DmWTPa44jeXJpb0iIMngyHc85WlV/8+XZlRxBhVMMApN86pxB5OZKFtpDC/",
   watchers: [
-    node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
-      cd: Path.expand("../assets", __DIR__)
-    ]
+    # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
+    node: ["esbuild.js", "--watch", cd: Path.expand("../assets", __DIR__)]
   ]
 
 # ## SSL Support
@@ -61,8 +50,7 @@ config :autorace_phoenix, AutoracePhoenixWeb.Endpoint,
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/autorace_phoenix_web/(live|views)/.*(ex)$",
-      ~r"lib/autorace_phoenix_web/templates/.*(eex)$",
-      ~r"lib/autorace_phoenix_web/live/.*(sface)$"
+      ~r"lib/autorace_phoenix_web/templates/.*(eex)$"
     ]
   ]
 
