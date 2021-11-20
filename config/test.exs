@@ -8,8 +8,7 @@ config :autorace_phoenix, AutoracePhoenixWeb.Endpoint,
   server: false
 
 # In test we don't send emails.
-config :autorace_phoenix, AutoracePhoenix.Mailer,
-  adapter: Swoosh.Adapters.Test
+config :autorace_phoenix, AutoracePhoenix.Mailer, adapter: Swoosh.Adapters.Test
 
 # Print only warnings and errors during test
 config :logger, level: :warn
