@@ -16,4 +16,5 @@ jobs:
           git push origin main
 
   deploy:
+    needs: commit-push
     uses: ./.github/workflows/deploy_to_gigalixir.yml
