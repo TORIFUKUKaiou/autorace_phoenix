@@ -10,10 +10,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ github.token }}
-          persist-credentials: false
-      - run: |
+          fetch-depth: 0
+      - name: git config
+        run: |
           git config user.name "TORIFUKUKaiou"
           git config user.email "torifuku.kaiou@gmail.com"
           git commit --allow-empty -m "empty commit"
           git push origin main
+      - name: git push gigalixir
+        run: |
+          git remote add gigalixir https://${{ secrets.GIGALIXIR_EMAIL }}:${{ secrets.GIGALIXIR_API_KEY }}@git.gigalixir.com/${{ secrets.GIGALIXIR_APP_NAME }}.git
+          git push -f gigalixir HEAD:refs/heads/main
