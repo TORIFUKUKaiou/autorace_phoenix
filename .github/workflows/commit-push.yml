@@ -9,12 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ github.token }}
+          persist-credentials: false
       - run: |
           git config user.name "TORIFUKUKaiou"
           git config user.email "torifuku.kaiou@gmail.com"
           git commit --allow-empty -m "empty commit"
           git push origin main
-
-  deploy:
-    needs: commit-push
-    uses: ./.github/workflows/deploy_to_gigalixir.yml
