@@ -8,9 +8,7 @@ jobs:
   commit-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v3
       - run: |
           git config user.name "TORIFUKUKaiou"
           git config user.email "torifuku.kaiou@gmail.com"
