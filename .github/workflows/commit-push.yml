@@ -1,0 +1,14 @@
+name: Commit and push
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          git config user.name "TORIFUKUKaiou"
+          git config user.email "torifuku.kaiou@gmail.com"
+          git commit --allow-empty -m "empty commit"
+          git push origin main
