@@ -16,4 +16,4 @@ jobs:
           git push origin main
 
   deploy:
-    uses: ./.github/workflows/deploy_to_gigalixir.yaml
+    uses: ./.github/workflows/deploy_to_gigalixir.yml
