@@ -38,6 +38,7 @@ defmodule AutoracePhoenixWeb.Router do
 
     scope "/" do
       pipe_through :browser
+
       live_dashboard "/dashboard", metrics: AutoracePhoenixWeb.Telemetry
     end
   end
