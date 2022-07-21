@@ -1,43 +1,46 @@
-import DPlayer from "dplayer";
-import Hls from "hls.js";
+import fluidPlayer from "fluid-player";
 
 class Player {
-  constructor(url, ended_handler) {
-    this.dp = new DPlayer({
-      container: document.getElementById("dplayer"),
-      screenshot: true,
-      video: {
-        url: url,
-        type: "customHls",
-        customType: {
-          customHls: function (video) {
-            const hls = new Hls();
-            hls.loadSource(video.src);
-            hls.attachMedia(video);
-          },
-        },
+  constructor(ended_handler) {
+    this.player = fluidPlayer(
+      'video-id',	{
+      "layoutControls": {
+        "controlBar": {
+        "autoHideTimeout": 3,
+        "animated": true,
+        "autoHide": true
       },
+      "htmlOnPauseBlock": {
+        "html": null,
+        "height": null,
+        "width": null
+      },
+      "autoPlay": true,
+      "mute": false,
+      "allowTheatre": true,
+      "playPauseAnimation": true,
+      "playbackRateEnabled": true,
+      "allowDownload": false,
+      "playButtonShowing": false,
+      "fillToContainer": true,
+      "posterImage": ""
+      },
+      "vastOptions": {
+        "adList": [],
+        "adCTAText": false,
+        "adCTATextPosition": ""
+      }
     });
 
-    this.dp.on("ended", function() { 
+    this.player.on('play', function() {
+      console.log('Video is playing');
+    });
+
+    this.player.on("ended", function() {
       console.log("ended");
       ended_handler();
     });
-    this.dp.on("abort", function() { console.log("abort"); });
-    this.dp.on("error", function() { console.log("error"); });
-    this.dp.on("canplay", function() { console.log("canplay"); });
-    this.dp.on("playing", function() { console.log("playing"); });
   };
-
-  fullScreen() {
-    console.log("fullScreen");
-    this.dp.fullScreen.request("browser");
-  }
-
-  play() {
-    console.log("play");
-    this.dp.play();
-  }
 }
 
 export default Player;

@@ -3,7 +3,6 @@
     "deploy": "cd .. && mix assets.deploy && rm -f _build/esbuild"
   },
   "dependencies": {
-    "dplayer": "^1.26.0",
-    "hls.js": "^1.1.1"
+    "fluid-player": "^3.0.4"
   }
 }

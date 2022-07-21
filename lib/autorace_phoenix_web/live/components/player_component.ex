@@ -3,10 +3,9 @@ defmodule AutoracePhoenixWeb.PlayerComponent do
 
   def render(assigns) do
     ~H"""
-    <div id="dplayer"
-         phx-hook="Player"
-         data-url={@url} >
-    </div>
+    <video id='video-id' phx-hook="Player">
+      <source src={@url} type='application/x-mpegURL'/>
+    </video>
     """
   end
 end
