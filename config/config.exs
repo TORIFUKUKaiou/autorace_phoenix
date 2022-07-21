@@ -28,10 +28,10 @@ config :swoosh, :api_client, false
 
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.12.18",
+  version: "0.14.29",
   default: [
     args:
-      ~w(js/app.js --bundle --target=es2016 --platform=node --define:global=window --inject:js/env-proxy.js --outdir=../priv/static/assets --external:/fonts/* --external:/images/* --loader:.svg=file),
+      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/* --platform=node --define:global=window --inject:js/env-proxy.js --loader:.svg=file),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
