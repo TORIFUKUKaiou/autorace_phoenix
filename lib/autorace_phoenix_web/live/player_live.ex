@@ -35,6 +35,19 @@ defmodule AutoracePhoenixWeb.PlayerLive do
 
         <%= submit "Play" %>
       </.form>
+
+      <%= for race <- AutoracePhoenix.Autorace.Cache.events() |> Enum.reverse do %>
+        <div
+          phx-click={
+            Phoenix.LiveView.JS.push("clicked",
+            value: %{race: race})
+          }
+        >
+          <p><%= Map.get(race, "range") %></p>
+          <p><%= Map.get(race, "title") %></p>
+          <p><%= Map.get(race, "place") %></p>
+        </div>
+      <% end %>
     <% else %>
       <button class="button is-link" phx-click="back">back</button>
       <%= live_component @socket, AutoracePhoenixWeb.PlayerComponent,
@@ -45,6 +58,13 @@ defmodule AutoracePhoenixWeb.PlayerLive do
 
   def handle_event("change", params, socket) do
     %{"race" => %{"date" => date, "place" => place, "race" => race}} = params
+    {:noreply, update_race_info(socket, date, place, race)}
+  end
+
+  def handle_event("clicked", %{"race" => %{"start" => start, "place" => place}}, socket) do
+    race = socket.assigns.race |> Integer.to_string()
+    date = start |> String.split("T") |> Enum.at(0)
+
     {:noreply, update_race_info(socket, date, place, race)}
   end
 
