@@ -50,7 +50,7 @@ defmodule AutoracePhoenixWeb.PlayerLive do
       <% end %>
     <% else %>
       <button class="button is-link" phx-click="back">back</button>
-      <%= live_component @socket, AutoracePhoenixWeb.PlayerComponent,
+      <%= live_component AutoracePhoenixWeb.PlayerComponent,
                          url: @url %>
     <% end %>
     """
