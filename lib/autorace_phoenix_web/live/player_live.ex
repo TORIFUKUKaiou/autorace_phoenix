@@ -18,8 +18,8 @@ defmodule AutoracePhoenixWeb.PlayerLive do
 
   def render(assigns) do
     ~H"""
-    <div class="pt-6"></div>
     <%= if @url == nil do %>
+      <div class="pt-6"></div>
       <div class="hero bg-base-200">
       <div class="hero-content flex-col lg:flex-row-reverse w-full">
         <div class="text-center lg:text-left">
@@ -76,9 +76,11 @@ defmodule AutoracePhoenixWeb.PlayerLive do
         </div>
       <% end %>
     <% else %>
-      <button class="btn" phx-click="back">back</button>
+      <div class="pt-3"></div>
       <%= live_component AutoracePhoenixWeb.PlayerComponent,
                          url: @url %>
+      <div class="pt-6" />
+      <button class="btn" phx-click="back">back</button>
     <% end %>
     """
   end
