@@ -10,13 +10,6 @@
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
   </head>
   <body>
-    <header class="container mt-6 mx-auto">
-      <section>
-        <a href="https://autoracex.connpass.com/" class="phx-logo">
-          <img src={Routes.static_path(@conn, "/images/phoenix.png")} alt="Phoenix Framework Logo" class="mx-auto"/>
-        </a>
-      </section>
-    </header>
     <%= @inner_content %>
   </body>
 </html>
