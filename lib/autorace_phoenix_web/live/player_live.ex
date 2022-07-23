@@ -20,6 +20,11 @@ defmodule AutoracePhoenixWeb.PlayerLive do
     ~H"""
     <%= if @url == nil do %>
       <div class="pt-6"></div>
+      <div class="flex justify-end">
+        <select data-choose-theme>
+          <%= options_for_select(theme_options(), "cupcake") %>
+        </select>
+      </div>
       <div class="hero bg-base-200">
       <div class="hero-content flex-col lg:flex-row-reverse w-full">
         <div class="text-center lg:text-left">
@@ -57,24 +62,26 @@ defmodule AutoracePhoenixWeb.PlayerLive do
       </div>
       </div>
 
-      <%= for race <- AutoracePhoenix.Autorace.Cache.events() |> Enum.reverse do %>
-        <div class="card bg-base-25 hover:opacity-75 shadow-xl py-3 w-1/2 mx-auto"
-          phx-click={
-            Phoenix.LiveView.JS.push("clicked",
-            value: %{race: race})
-          }
-        >
-          <div class="card-body">
-            <h2 class="card-title"><%= Map.get(race, "range") %></h2>
-            <h2><%= Map.get(race, "title") %></h2>
-            <div class="card-actions justify-end">
-              <div class={Map.get(race, "place") |> convert_place_value() |> badge()}>
-                <%= Map.get(race, "place") |> convert_place_value() |> place_name() %>
+      <div class="grid grid-cols-3 gap-4">
+        <%= for race <- AutoracePhoenix.Autorace.Cache.events() |> Enum.reverse do %>
+          <div class="card bg-base-25 hover:opacity-75 shadow-xl mx-auto"
+            phx-click={
+              Phoenix.LiveView.JS.push("clicked",
+              value: %{race: race})
+            }
+          >
+            <div class="card-body">
+              <h2 class="card-title"><%= Map.get(race, "range") %></h2>
+              <h2><%= Map.get(race, "title") %></h2>
+              <div class="card-actions justify-end">
+                <div class={Map.get(race, "place") |> convert_place_value() |> badge()}>
+                  <%= Map.get(race, "place") |> convert_place_value() |> place_name() %>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     <% else %>
       <div class="pt-3"></div>
       <%= live_component AutoracePhoenixWeb.PlayerComponent,
@@ -223,5 +230,40 @@ defmodule AutoracePhoenixWeb.PlayerLive do
 
   defp badge("sanyou") do
     "badge badge-info badge-lg"
+  end
+
+  defp theme_options() do
+    [
+      "light",
+      "dark",
+      "cupcake",
+      "bumblebee",
+      "emerald",
+      "corporate",
+      "synthwave",
+      "retro",
+      "cyberpunk",
+      "valentine",
+      "halloween",
+      "garden",
+      "forest",
+      "aqua",
+      "lofi",
+      "pastel",
+      "fantasy",
+      "wireframe",
+      "black",
+      "luxury",
+      "dracula",
+      "cmyk",
+      "autumn",
+      "business",
+      "acid",
+      "lemonade",
+      "night",
+      "coffee",
+      "winter"
+    ]
+    |> Enum.map(fn theme -> {String.capitalize(theme) |> String.to_atom(), theme} end)
   end
 end

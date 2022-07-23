@@ -4,6 +4,7 @@
   },
   "dependencies": {
     "daisyui": "^2.19.1",
-    "fluid-player": "^3.0.4"
+    "fluid-player": "^3.0.4",
+    "theme-change": "^2.1.0"
   }
 }
