@@ -18,26 +18,66 @@ defmodule AutoracePhoenixWeb.PlayerLive do
 
   def render(assigns) do
     ~H"""
+    <div class="pt-6"></div>
     <%= if @url == nil do %>
-      <h1><%= @title %></h1>
-      <h2><%= @range %></h2>
+      <div class="hero bg-base-200">
+      <div class="hero-content flex-col lg:flex-row-reverse w-full">
+        <div class="text-center lg:text-left">
+          <h1 class="text-xl font-bold"><%= title_html(@title) %></h1>
+          <p class="py-6"><%= @range %></p>
+        </div>
+        <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+          <div class="card-body">
+            <.form let={f} for={:race} phx-change="change" phx-submit="play">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Date</span>
+                </label>
+                <%= date_input f, :date, value: @date, class: "input input-bordered" %>
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Place</span>
+                </label>
+                <%= select f, :place, @places, selected: @place, class: "input input-bordered" %>
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Race</span>
+                </label>
+                <%= select f, :race, @races, selected: @race, class: "input input-bordered" %>
+              </div>
 
-      <.form let={f} for={:race} phx-change="change" phx-submit="play">
-        <label>
-          Date: <%= date_input f, :date, value: @date %>
-        </label>
-        <label>
-          Place: <%= select f, :place, @places, selected: @place %>
-        </label>
-        <label>
-          Race: <%= select f, :race, @races, selected: @race %>
-        </label>
+              <div class="form-control mt-6">
+                <%= submit "Play", class: "btn btn-primary" %>
+              </div>
+            </.form>
+          </div>
+        </div>
+      </div>
+      </div>
 
-        <%= submit "Play" %>
-      </.form>
+      <%= for race <- AutoracePhoenix.Autorace.Cache.events() |> Enum.reverse do %>
+        <div class="card bg-base-25 hover:opacity-75 shadow-xl py-3 w-1/2 mx-auto"
+          phx-click={
+            Phoenix.LiveView.JS.push("clicked",
+            value: %{race: race})
+          }
+        >
+          <div class="card-body">
+            <h2 class="card-title"><%= Map.get(race, "range") %></h2>
+            <h2><%= Map.get(race, "title") %></h2>
+            <div class="card-actions justify-end">
+              <div class={Map.get(race, "place") |> convert_place_value() |> badge()}>
+                <%= Map.get(race, "place") |> convert_place_value() |> place_name() %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
     <% else %>
-      <button class="button is-link" phx-click="back">back</button>
-      <%= live_component @socket, AutoracePhoenixWeb.PlayerComponent,
+      <button class="btn" phx-click="back">back</button>
+      <%= live_component AutoracePhoenixWeb.PlayerComponent,
                          url: @url %>
     <% end %>
     """
@@ -45,6 +85,13 @@ defmodule AutoracePhoenixWeb.PlayerLive do
 
   def handle_event("change", params, socket) do
     %{"race" => %{"date" => date, "place" => place, "race" => race}} = params
+    {:noreply, update_race_info(socket, date, place, race)}
+  end
+
+  def handle_event("clicked", %{"race" => %{"start" => start, "place" => place}}, socket) do
+    race = socket.assigns.race |> Integer.to_string()
+    date = start |> String.split("T") |> Enum.at(0)
+
     {:noreply, update_race_info(socket, date, place, race)}
   end
 
@@ -142,5 +189,37 @@ defmodule AutoracePhoenixWeb.PlayerLive do
       range: range,
       race: String.to_integer(race)
     )
+  end
+
+  defp title_html(title) do
+    title |> String.replace("　", "<br/>") |> Phoenix.HTML.raw()
+  end
+
+  defp place_name(place) do
+    {place_name, _} =
+      AutoracePhoenix.Autorace.places()
+      |> Enum.find(fn {_name, value} -> value == place end)
+
+    place_name
+  end
+
+  defp badge("kawaguchi") do
+    "badge badge-success badge-lg"
+  end
+
+  defp badge("isezaki") do
+    "badge badge-warning badge-lg"
+  end
+
+  defp badge("hama") do
+    "badge badge-error badge-lg"
+  end
+
+  defp badge("iizuka") do
+    "badge badge-accent badge-lg"
+  end
+
+  defp badge("sanyou") do
+    "badge badge-info badge-lg"
   end
 end
